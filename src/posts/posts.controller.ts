@@ -3,19 +3,19 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
   Request,
   UseGuards,
+  InternalServerErrorException,
+  BadRequestException,
 } from '@nestjs/common';
 
 import { PostsService } from './posts.service';
 import { CommentsService } from '../comments/comments.service';
 import { CreatePostDto } from './dto/create-post.dto';
-import { UpdatePostDto } from './dto/update-post.dto';
 import { CreateCommentDto } from '../comments/dto/create-comment.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { CommentErrors } from '../comments/constsnts';
 
 @Controller('posts')
 export class PostsController {
@@ -32,12 +32,26 @@ export class PostsController {
 
   @UseGuards(JwtAuthGuard)
   @Post(':postId/comments')
-  makeCommentOnPost(
+  async commentOnPost(
     @Request() req,
     @Body() createCommentDto: CreateCommentDto,
     @Param('postId') postId: string,
   ) {
-    return this.commentsService.create(req.user, postId, createCommentDto);
+    try {
+      const comment = await this.commentsService.commentOnPost(
+        req.user,
+        postId,
+        createCommentDto,
+      );
+      return comment;
+    } catch (error) {
+      switch (error.message) {
+        case CommentErrors.NO_ASSOCIATED_POST:
+          throw new BadRequestException(CommentErrors.NO_ASSOCIATED_POST);
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
   }
 
   @Get()
@@ -48,15 +62,5 @@ export class PostsController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.postsService.findOne(id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-    return this.postsService.update(id, updatePostDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postsService.remove(id);
   }
 }

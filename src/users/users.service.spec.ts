@@ -1,16 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { JwtModule, JwtService } from '@nestjs/jwt';
-import { FindConditions, FindOneOptions, Repository } from 'typeorm';
+import {
+  DeepPartial,
+  FindConditions,
+  FindOneOptions,
+  Repository,
+  SaveOptions,
+} from 'typeorm';
 
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
 import { AuthService } from '../auth/auth.service';
-import { mockUser } from './__fixtures__';
+import { mockUser, mockCreateUserDto } from './__fixtures__';
 import { UserErrors } from './constants';
 import { mockJWT } from '../auth/__fixtures__';
-import { CreateUserDto } from './dto/create-user.dto';
-import { mockDate } from '../../test/__fixtures__';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -21,13 +25,10 @@ describe('UsersService', () => {
     Promise<User>,
     [conditions?: FindConditions<User>, options?: FindOneOptions<User>]
   >;
-  let saveSpy;
-  const createUserDto: CreateUserDto = {
-    email: mockUser.email,
-    password: mockUser.password,
-    firstName: mockUser.firstName,
-    lastName: mockUser.lastName,
-  };
+  let saveSpy: jest.SpyInstance<
+    Promise<DeepPartial<User> & User>,
+    [entity: DeepPartial<User>, options?: SaveOptions]
+  >;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -61,7 +62,7 @@ describe('UsersService', () => {
       jest.spyOn(service, 'findByEmail').mockResolvedValue(mockUser);
 
       try {
-        await service.signUp(createUserDto);
+        await service.signUp(mockCreateUserDto);
       } catch (error) {
         expect(error.message).toBe(UserErrors.USER_EXISTS);
       }
@@ -76,12 +77,12 @@ describe('UsersService', () => {
         .spyOn(service, 'create')
         .mockResolvedValue(mockUser);
       const loginSpy = jest.spyOn(authService, 'login');
-      const result = await service.signUp(createUserDto);
+      const result = await service.signUp(mockCreateUserDto);
 
       expect(result).toStrictEqual({ access_token: mockJWT });
       expect(createSpy).toHaveBeenCalledTimes(1);
       expect(updateLastAccessSpy).toHaveBeenCalledTimes(1);
-      expect(createSpy).toHaveBeenCalledWith(createUserDto);
+      expect(createSpy).toHaveBeenCalledWith(mockCreateUserDto);
       expect(loginSpy).toHaveBeenCalledWith(mockUser);
     });
   });
@@ -89,11 +90,11 @@ describe('UsersService', () => {
   describe('create', () => {
     it('should create a user successfully', async () => {
       const createSpy = jest.spyOn(repo, 'create').mockReturnValue(mockUser);
-      const result = await service.create(createUserDto);
+      const result = await service.create(mockCreateUserDto);
 
       expect(result).toBe(mockUser);
       expect(createSpy).toHaveBeenCalledTimes(1);
-      expect(createSpy).toHaveBeenCalledWith(createUserDto);
+      expect(createSpy).toHaveBeenCalledWith(mockCreateUserDto);
       expect(saveSpy).toHaveBeenCalledTimes(1);
       expect(saveSpy).toHaveBeenCalledWith(mockUser);
     });
