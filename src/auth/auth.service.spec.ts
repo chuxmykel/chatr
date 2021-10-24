@@ -7,7 +7,7 @@ import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 import { User } from '../users/entities/user.entity';
 import { mockUser } from '../users/__fixtures__/';
-import { mockJWT } from './__fixtures__/';
+import { mockLoginResponse, mockJWT } from './__fixtures__/';
 
 jest.mock('bcrypt', () => ({
   compare: jest.fn((str, hash) => str === hash),
@@ -85,9 +85,7 @@ describe('AuthService', () => {
         email: mockUser.email,
         id: mockUser.id,
       });
-      expect(result).toStrictEqual({
-        access_token: mockJWT,
-      });
+      expect(result).toStrictEqual(mockLoginResponse);
     });
   });
 });

@@ -7,9 +7,12 @@ import { AppController } from './app.controller';
 import { AuthService } from './auth/auth.service';
 import { UsersService } from './users/users.service';
 import { User } from './users/entities/user.entity';
+import { mockLoginResponse } from './auth/__fixtures__';
 
 describe('AppController', () => {
   let controller: AppController;
+  let authService: AuthService;
+  const mockRequest = {};
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -26,9 +29,19 @@ describe('AppController', () => {
     }).compile();
 
     controller = module.get<AppController>(AppController);
+    authService = module.get<AuthService>(AuthService);
   });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  describe('login', () => {
+    it('should login a user and return an access token for subsequent requests', async () => {
+      jest.spyOn(authService, 'login').mockResolvedValue(mockLoginResponse);
+
+      const result = await controller.login(mockRequest);
+      expect(result).toBe(mockLoginResponse)
+    });
   });
 });
