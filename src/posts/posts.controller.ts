@@ -15,7 +15,7 @@ import { CommentsService } from '../comments/comments.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { CreateCommentDto } from '../comments/dto/create-comment.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { CommentErrors } from '../comments/constsnts';
+import { CommentErrors } from '../comments/constants';
 
 @Controller('posts')
 export class PostsController {

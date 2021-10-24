@@ -7,6 +7,7 @@ import { Post } from '../posts/entities/post.entity';
 import { Comment } from './entities/comment.entity';
 import { User } from '../users/entities/user.entity';
 import { CreateCommentDto } from './dto/create-comment.dto';
+import { CommentErrors } from './constants';
 
 @Injectable()
 export class CommentsService {
@@ -22,6 +23,9 @@ export class CommentsService {
     createCommentDto: CreateCommentDto,
   ) {
     const post: Post = await this.postsService.findOne(postId);
+    if (!post) {
+      throw new Error(CommentErrors.NO_ASSOCIATED_POST);
+    }
     const comment = this.commentsRepository.create({
       ...createCommentDto,
       post,
