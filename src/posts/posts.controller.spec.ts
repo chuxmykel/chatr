@@ -13,7 +13,7 @@ import { Post } from './entities/post.entity';
 import { Comment } from '../comments/entities/comment.entity';
 import { mockComment, mockCreateCommentDto } from '../comments/__fixtures__';
 import { mockCreatePostDto, mockPost } from './__fixtures__';
-import { CommentErrors } from '../comments/constsnts';
+import { CommentErrors } from '../comments/constants';
 import { mockUnknownError } from '../../test/__fixtures__';
 
 describe('PostsController', () => {
