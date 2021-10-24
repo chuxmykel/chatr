@@ -14,6 +14,7 @@ import { mockUser } from './__fixtures__';
 import { mockJWT } from '../auth/__fixtures__';
 import { AuthService } from '../auth/auth.service';
 import { JwtModule } from '@nestjs/jwt';
+import { mockUnknownError } from '../../test/__fixtures__';
 
 describe('UsersController', () => {
   let controller: UsersController;
@@ -63,9 +64,7 @@ describe('UsersController', () => {
     });
 
     it('should throw an internal server error when unknown errors are encountered', async () => {
-      jest
-        .spyOn(service, 'signUp')
-        .mockRejectedValue(new Error('unknown error'));
+      jest.spyOn(service, 'signUp').mockRejectedValue(mockUnknownError);
       try {
         await signUp();
       } catch (error) {

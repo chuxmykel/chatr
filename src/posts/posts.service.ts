@@ -1,9 +1,8 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { CreatePostDto } from './dto/create-post.dto';
-import { UpdatePostDto } from './dto/update-post.dto';
 import { Post } from './entities/post.entity';
 import { User } from '../users/entities/user.entity';
 
@@ -25,14 +24,5 @@ export class PostsService {
 
   findOne(id: string): Promise<Post> {
     return this.postsRepository.findOne(id);
-  }
-
-  async update(id: string, updatePostDto: UpdatePostDto): Promise<Post> {
-    await this.postsRepository.update(id, updatePostDto);
-    return this.findOne(id);
-  }
-
-  async remove(id: string): Promise<void> {
-    await this.postsRepository.softDelete(id);
   }
 }

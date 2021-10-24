@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -16,7 +16,11 @@ export class CommentsService {
     private readonly postsService: PostsService,
   ) {}
 
-  async create(user: User, postId: string, createCommentDto: CreateCommentDto) {
+  async commentOnPost(
+    user: User,
+    postId: string,
+    createCommentDto: CreateCommentDto,
+  ) {
     const post: Post = await this.postsService.findOne(postId);
     const comment = this.commentsRepository.create({
       ...createCommentDto,
