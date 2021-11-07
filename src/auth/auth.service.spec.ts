@@ -68,7 +68,7 @@ describe('AuthService', () => {
         mockUser.email,
         mockUser.password,
       );
-      const { password, ...expectedResult } = mockUser;
+      const { password: _, ...expectedResult } = mockUser;
       expect(result).toStrictEqual(expectedResult);
     });
   });
