@@ -1,6 +1,6 @@
 {
   "type": "sqlite",
-  "database": "/:memory",
+  "database": ":memory",
   "entities": ["dist/**/entities/*.entity.js"],
   "synchronize": true
 }
