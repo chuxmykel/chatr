@@ -6,7 +6,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es2017",
+    "target": "es6",
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
@@ -19,4 +19,12 @@
     "noFallthroughCasesInSwitch": false,
     "allowJs": true
   },
+  "include": [
+    "./src",
+  ],
+  "exclude": [
+    "./node_modules",
+    "./dist"
+  ],
+  "compileOnSave": true,
 }
