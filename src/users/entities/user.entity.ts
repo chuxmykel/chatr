@@ -10,6 +10,7 @@ import {
 
 import { Post } from '../../posts/entities/post.entity';
 import { Comment } from '../../comments/entities/comment.entity';
+import { ApiHideProperty } from '@nestjs/swagger';
 
 @Entity()
 export class User {
@@ -26,6 +27,7 @@ export class User {
   })
   email: string;
 
+  @ApiHideProperty()
   @Column()
   password: string;
 
@@ -45,5 +47,7 @@ export class User {
 
   @UpdateDateColumn({ name: 'updated_at' }) 'updated_at': Date;
 
-  @DeleteDateColumn({ name: 'deleted_at' }) 'deleted_at': Date;
+  @ApiHideProperty()
+  @DeleteDateColumn({ name: 'deleted_at' })
+  'deleted_at': Date;
 }
