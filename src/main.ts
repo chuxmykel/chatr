@@ -22,7 +22,10 @@ async function bootstrap() {
     .setTitle('Chatr')
     .setDescription('A simple API for posts and comments.')
     .setVersion('1.0')
-    .addBearerAuth()
+    .addBearerAuth({
+      description: 'A JWToken provided by login in to the server.',
+      type: 'http',
+    })
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
