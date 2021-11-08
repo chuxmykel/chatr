@@ -1,3 +1,4 @@
+import { ApiHideProperty } from '@nestjs/swagger';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -28,5 +29,7 @@ export class Comment {
 
   @UpdateDateColumn({ name: 'updated_at' }) 'updated_at': Date;
 
-  @DeleteDateColumn({ name: 'deleted_at' }) 'deleted_at': Date;
+  @ApiHideProperty()
+  @DeleteDateColumn({ name: 'deleted_at' })
+  'deleted_at': Date;
 }

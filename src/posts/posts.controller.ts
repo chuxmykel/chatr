@@ -9,6 +9,7 @@ import {
   InternalServerErrorException,
   BadRequestException,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { PostsService } from './posts.service';
 import { CommentsService } from '../comments/comments.service';
@@ -17,6 +18,7 @@ import { CreateCommentDto } from '../comments/dto/create-comment.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CommentErrors } from '../comments/constants';
 
+@ApiTags('posts')
 @Controller('posts')
 export class PostsController {
   constructor(
@@ -24,12 +26,14 @@ export class PostsController {
     private readonly commentsService: CommentsService,
   ) {}
 
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Post()
   create(@Request() req, @Body() createPostDto: CreatePostDto) {
     return this.postsService.create(req.user, createPostDto);
   }
 
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Post(':postId/comments')
   async commentOnPost(
