@@ -19,7 +19,10 @@ import { AuthService } from './auth/auth.service';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { UserErrors } from './users/constants';
 import { CreateUserDto } from './users/dto/create-user.dto';
-import { ExceptionDto, SignUpResponseDto } from './users/response/sign-up-response.dto';
+import {
+  ExceptionDto,
+  SignUpResponseDto,
+} from './users/response/sign-up-response.dto';
 import { UsersService } from './users/users.service';
 
 @Controller()
