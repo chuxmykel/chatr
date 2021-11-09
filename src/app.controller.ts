@@ -6,6 +6,7 @@ import {
   Body,
   ConflictException,
   InternalServerErrorException,
+  HttpCode,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -13,16 +14,18 @@ import {
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
   ApiTags,
+  ApiOkResponse,
+  ApiBody,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
 import { AuthService } from './auth/auth.service';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { UserErrors } from './users/constants';
 import { CreateUserDto } from './users/dto/create-user.dto';
-import {
-  ExceptionDto,
-  SignUpResponseDto,
-} from './users/response/sign-up-response.dto';
+import { ExceptionDto } from './exception-response.dto';
+import { AuthResponseDto } from './auth-response.dto';
+import { LoginUserDto} from './login-user.dto';
 import { UsersService } from './users/users.service';
 
 @Controller()
@@ -34,7 +37,7 @@ export class AppController {
 
   @ApiCreatedResponse({
     description: 'User Registration Successful.',
-    type: SignUpResponseDto,
+    type: AuthResponseDto,
   })
   @ApiConflictResponse({
     description:
@@ -53,7 +56,7 @@ export class AppController {
   @Post('auth/register')
   async signUp(
     @Body() createUserDto: CreateUserDto,
-  ): Promise<SignUpResponseDto> {
+  ): Promise<AuthResponseDto> {
     try {
       const result = await this.usersService.signUp(createUserDto);
       return result;
@@ -67,10 +70,30 @@ export class AppController {
     }
   }
 
+  @ApiOkResponse({
+    description: 'Login successful.',
+    type: AuthResponseDto,
+  })
+  @ApiBody({
+    type: LoginUserDto,
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request',
+    type: ExceptionDto,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+    type: ExceptionDto
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error',
+    type: ExceptionDto,
+  })
   @ApiTags('auth')
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
-  async login(@Request() req) {
-    return this.authService.login(req.user);
+  @HttpCode(200)
+  async login(@Request() req: any) { // TODO: fix Request type with auth user later.
+    return await this.authService.login(req.user);
   }
 }

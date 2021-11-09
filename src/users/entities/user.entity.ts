@@ -6,7 +6,9 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   OneToMany,
+  BeforeInsert,
 } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 import { Post } from '../../posts/entities/post.entity';
 import { Comment } from '../../comments/entities/comment.entity';
@@ -50,4 +52,11 @@ export class User {
   @ApiHideProperty()
   @DeleteDateColumn({ name: 'deleted_at' })
   'deleted_at': Date;
+
+  @BeforeInsert()
+  async hashPassword (){
+    const salt = await bcrypt.genSalt();
+    const hash = await bcrypt.hash(this.password, salt);
+    this.password = hash;
+  }
 }
