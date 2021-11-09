@@ -1,7 +1,6 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
 
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -25,9 +24,6 @@ export class UsersService {
     if (existingUser) {
       throw new Error(UserErrors.USER_EXISTS);
     }
-    const salt = await bcrypt.genSalt();
-    const hash = await bcrypt.hash(createUserDto.password, salt);
-    createUserDto.password = hash;
     const user = await this.create(createUserDto);
     return this.authService.login(user);
   }
